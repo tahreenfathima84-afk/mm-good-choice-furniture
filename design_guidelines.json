@@ -1,0 +1,130 @@
+{
+  "project_name": "M M GOOD CHOICE FURNITURE",
+  "theme_strategy": "Light Theme ONLY (Warm Luxury Archetype). NO pure white (#FFFFFF), NO pure black (#000000).",
+  "typography": {
+    "fonts": {
+      "headings": "Poppins, font-sans, font-extrabold",
+      "body": "Manrope, font-sans, font-normal",
+      "buttons": "Inter, font-sans, font-semibold"
+    },
+    "scales": {
+      "hero_title": "text-[50px] md:text-[70px] lg:text-[100px] xl:text-[120px] leading-[0.9] tracking-tighter",
+      "h2": "text-4xl sm:text-5xl lg:text-6xl tracking-tighter",
+      "h3": "text-2xl sm:text-3xl",
+      "body_lg": "text-lg leading-relaxed",
+      "body": "text-base leading-relaxed",
+      "labels": "text-xs tracking-[0.2em] uppercase"
+    }
+  },
+  "colors": {
+    "background": {
+      "primary": "#F7F5F0",
+      "secondary": "#EFECE5",
+      "tertiary": "#E3DECF",
+      "matcha_beige": "#E8E9E1",
+      "cream": "#F9F8F6"
+    },
+    "text": {
+      "primary": "#2D2622",
+      "secondary": "#5C524A",
+      "muted": "#8A8077"
+    },
+    "accents": {
+      "champagne_gold": "#D4AF37",
+      "copper": "#B87333",
+      "olive_green": "#6B705C",
+      "royal_blue": "#1D3557",
+      "sky_blue": "#A8DADC",
+      "espresso_brown": "#3B2F2F"
+    },
+    "gradients": {
+      "luxury_overlay": "bg-gradient-to-t from-[#2D2622]/60 via-[#2D2622]/20 to-transparent",
+      "champagne_glow": "bg-gradient-to-r from-[#D4AF37]/20 to-transparent"
+    }
+  },
+  "visual_enhancers": {
+    "glassmorphism": "backdrop-blur-2xl bg-[#F7F5F0]/70 border border-[#2D2622]/5 shadow-[0_8px_32px_rgba(45,38,34,0.04)]",
+    "shadows": {
+      "luxury_ambient": "shadow-[0_20px_40px_-15px_rgba(60,45,35,0.15)]",
+      "button_glow": "shadow-[0_0_20px_rgba(212,175,55,0.4)]"
+    },
+    "textures": "Include an SVG noise overlay with 2-3% opacity over major sections to break the digital flatness."
+  },
+  "layouts": {
+    "spacing_system": "Generous Spacing: p-8, p-12, p-24. Double standard margins.",
+    "bento_grid": "grid-cols-1 md:grid-cols-12 gap-6 md:gap-8. Asymmetric spans (e.g. col-span-8 and col-span-4).",
+    "masonry_gallery": "Use CSS columns or tailored grid for a high-density, varying-height image gallery.",
+    "section_padding": "py-24 md:py-32 lg:py-40"
+  },
+  "components": {
+    "navigation": "Floating glass sticky navbar. MUST have `z-50`, `backdrop-blur-2xl`, and solid text contrast. Animated underline on links.",
+    "buttons": "Magnetic buttons with Framer Motion. Pill-shaped or sharp depending on specific CTA. Primary uses deep espresso or copper background with warm sand text.",
+    "cards": "Zero borders, relying on spacing and subtle shadow. Product cards need image reveals and card lifts on hover. NO generic Vercel cards.",
+    "dashboard": "Google Auth protected. Minimalist bento layout using the same color palette but high density. Shadcn UI tables/forms but customized to match espresso/sand colors.",
+    "loading_screen": "Cinematic. Full screen, deep espresso background, champagne gold logo reveal, floating particles, fades out.",
+    "stats_counter": "Animated counters for: 10+ years, 5000+ customers, 3000+ delivered, 100+ custom projects."
+  },
+  "content_strategy": {
+    "prices": {
+      "Dining": "₹16,000–₹35,000",
+      "LCD/TV": "₹16,000–₹30,000",
+      "Sofas": "₹28,000–₹60,000",
+      "Shoe_Rack": "₹2,000–₹7,000",
+      "Beds": "₹8,500–₹40,000 (sizes 4x6, 5x6.5, 6x6.5)"
+    },
+    "whatsapp_links": "Deep-links on product cards (wa.me/919110690642).",
+    "manifesto": "Numbered chapters for Why Choose Us (10+ years, premium quality, trusted, affordable luxury, custom furniture, delivery, installation)."
+  },
+  "motion": {
+    "scroll": "Lenis smooth scrolling is MANDATORY.",
+    "hero": "Masked line-by-line reveal on load. Slow zoom on background image (transform scale 1 to 1.1 over 10s). Parallax effect on scroll.",
+    "interactions": "Magnetic buttons (Framer motion drag), mouse glow, luxury hovers, card lifts (-translate-y-2), back-to-top.",
+    "marquee": "Slow editorial marquee for manifesto chapters or brand features. Low contrast text."
+  },
+  "media": {
+    "images": {
+      "living_room": [
+        "https://images.unsplash.com/photo-1704040686413-2c607dbd2f06?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1OTV8MHwxfHNlYXJjaHw0fHxsdXh1cnklMjB3b29kZW4lMjBsaXZpbmclMjByb29tJTIwZnVybml0dXJlfGVufDB8fHx8MTc4NjA0MDE4MXww&ixlib=rb-4.1.0&q=85",
+        "https://images.unsplash.com/photo-1758957701419-2c6e266f7988?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1OTV8MHwxfHNlYXJjaHwzfHxsdXh1cnklMjB3b29kZW4lMjBsaXZpbmclMjByb29tJTIwZnVybml0dXJlfGVufDB8fHx8MTc4NjA0MDE4MXww&ixlib=rb-4.1.0&q=85",
+        "https://images.unsplash.com/photo-1680503397107-475907e4f3e3?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1OTV8MHwxfHNlYXJjaHwyfHxsdXh1cnklMjB3b29kZW4lMjBsaXZpbmclMjByb29tJTIwZnVybml0dXJlfGVufDB8fHx8MTc4NjA0MDE4MXww&ixlib=rb-4.1.0&q=85"
+      ],
+      "dining": [
+        "https://images.unsplash.com/photo-1636138388621-258a72ecb07e?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjY2NzZ8MHwxfHNlYXJjaHwxfHxwcmVtaXVtJTIwd29vZGVuJTIwZGluaW5nJTIwdGFibGUlMjBpbnRlcmlvcnxlbnwwfHx8fDE3ODYwNDAxODF8MA&ixlib=rb-4.1.0&q=85",
+        "https://images.unsplash.com/photo-1713192707415-86198e4d8490?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjY2NzZ8MHwxfHNlYXJjaHw0fHxwcmVtaXVtJTIwd29vZGVuJTIwZGluaW5nJTIwdGFibGUlMjBpbnRlcmlvcnxlbnwwfHx8fDE3ODYwNDAxODF8MA&ixlib=rb-4.1.0&q=85",
+        "https://images.unsplash.com/photo-1740759546813-6b58d44f5dce?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjY2NzZ8MHwxfHNlYXJjaHwzfHxwcmVtaXVtJTIwd29vZGVuJTIwZGluaW5nJTIwdGFibGUlMjBpbnRlcmlvcnxlbnwwfHx8fDE3ODYwNDAxODF8MA&ixlib=rb-4.1.0&q=85"
+      ],
+      "bedroom": [
+        "https://images.unsplash.com/photo-1696762932825-2737db830bbe?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1ODh8MHwxfHNlYXJjaHwxfHxsdXh1cnklMjBtb2Rlcm4lMjB3b29kZW4lMjBiZWQlMjBiZWRyb29tfGVufDB8fHx8MTc4NjA0MDE4MXww&ixlib=rb-4.1.0&q=85",
+        "https://images.unsplash.com/photo-1642541070065-3912f347e7c6?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1ODh8MHwxfHNlYXJjaHw0fHxsdXh1cnklMjBtb2Rlcm4lMjB3b29kZW4lMjBiZWQlMjBiZWRyb29tfGVufDB8fHx8MTc4NjA0MDE4MXww&ixlib=rb-4.1.0&q=85"
+      ]
+    }
+  },
+  "3d_libraries": [
+    "framer-motion",
+    "react-fast-marquee",
+    "tsparticles",
+    "lucide-react"
+  ],
+  "instructions_to_main_agent": [
+    "Implement pure React with Tailwind CSS using .js extensions (not .tsx files).",
+    "DO NOT use pure white (#FFFFFF) or pure black (#000000). Strictly adhere to the defined warm luxury tones.",
+    "Implement the cinematic loading screen first. It should overlay the entire viewport, show the logo, and fade out smoothly.",
+    "The hero section MUST feature a modern Indian living room background with a slow 10-second zoom (scale 1 to 1.1) and a masked line-by-line typography reveal.",
+    "The text contrast must be high. Use Dark text (#2D2622) on warm sand backgrounds.",
+    "Add WhatsApp deep-links (wa.me/919110690642) on major product CTAs.",
+    "The Owner Dashboard requires a hidden route (/admin) with Google Login (use social login component) to manage products/gallery/prices/enquiries.",
+    "Never use generic card layouts. Opt for bento box layouts with varying spans and heavy padding.",
+    "Use 'react-fast-marquee' for the slow editorial manifesto chapters."
+  ],
+  "UNIVERSAL_GUIDELINES_FOR_MAIN_AGENT": {
+    "testing_attributes": "All interactive elements MUST include `data-testid` (e.g. data-testid='hero-cta-button').",
+    "general": [
+      "Avoid 'AI slop' aesthetics. Do not center everything. Break symmetry.",
+      "Never use universal transition (transition: all). Animate specific properties.",
+      "Never center align the App container globally.",
+      "Use sonner for toast notifications.",
+      "Ensure robust focus states and accessibility standards (APCA contrast).",
+      "Do NOT use transparent backgrounds for dropdowns or navbars under content. Always use glassmorphism."
+    ]
+  }
+}
