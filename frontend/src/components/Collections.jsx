@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { MessageCircle, FileText, Search, X, SearchX } from "lucide-react";
 import { SectionHeading, Reveal, Magnetic, scrollToId, EASE } from "./Extras";
 import { CATEGORIES, FALLBACK_PRODUCTS } from "../lib/content";
-import { api, waLink } from "../lib/api";
+import { api, waLink, imgSrc } from "../lib/api";
 
 const FILTER_GROUPS = [
   { label: "All", match: null },
@@ -58,7 +58,7 @@ function ProductCard({ p, index }) {
     >
       <div className="relative h-64 overflow-hidden">
         <img
-          src={p.image}
+          src={imgSrc(p.image)}
           alt={p.name}
           loading="lazy"
           className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-108"
@@ -191,14 +191,14 @@ export default function Collections() {
             <span className="grid h-16 w-16 place-items-center rounded-full bg-stone/70 text-copper">
               <SearchX size={26} />
             </span>
-            <p className="mt-6 font-display text-xl font-bold text-ink">No furniture found matching your search.</p>
-            <p className="mt-2 max-w-sm text-sm text-inksoft">Try a different keyword or browse the full collection.</p>
+            <p className="mt-6 font-display text-xl font-bold text-ink">No furniture found</p>
+            <p className="mt-2 max-w-sm text-sm text-inksoft">Try another category or search term.</p>
             <button
               data-testid="clear-search-button"
               onClick={clearAll}
               className="mt-7 rounded-full bg-espresso px-7 py-3 font-btn text-xs font-semibold tracking-wide text-cream transition-colors duration-300 hover:bg-copper"
             >
-              Clear Search
+              View All Furniture
             </button>
           </motion.div>
         ) : (

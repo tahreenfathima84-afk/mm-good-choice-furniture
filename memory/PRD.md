@@ -65,6 +65,13 @@ Build a complete, production-ready, Awwwards-level luxury website for M M Good C
 - Catalogue total: 64 products (20 real + 44 AI); existing real products untouched
 - PENDING: 45th image "Wooden Display Rack" (Other Furniture) failed — EMERGENT_LLM_KEY budget exceeded (2.99/2.93). User must top up: Profile → Manage plan → Universal Key → Add Balance, then re-run generation for that one item (script: /app/scripts/gen_furniture.py)
 
+## Updates (2026-08-07, Collections filter bug fix)
+- Fixed wrong image/product matching in Collections (products collection): Sliding Door Wardrobe had a bedroom image, Queen Size Bed with Storage had a sofa image, Compact Shoe Rack had a dining-table image, Classic LCD Stand had a pink wardrobe image — all replaced with correct premium images (reused existing generated catalogue images, copied to col_*.jpg files)
+- Added 2 new wardrobe products to Collections (2-Door Wooden Wardrobe, 3-Door Wardrobe) — Wardrobes category now has 3 genuine wardrobe products
+- Collections empty state updated: "No furniture found" / "Try another category or search term." / "View All Furniture" reset button
+- Collections ProductCard now uses imgSrc() helper so backend-hosted images resolve correctly
+- Verified: all 9 category filters, searches (sofa/bed/table/wardrobe/tv/shoe/office), search+filter combos (Beds+wood, Sofas+l-shape), empty state, reset, mobile
+
 ## Backlog
 - P0: Real owner must sign in once at /owner to claim ownership (then remove test user)
 - P1: Replace stock photos with real showroom photography via dashboard uploads
