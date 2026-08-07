@@ -406,6 +406,11 @@ export default function Owner() {
                 <input data-testid="settings-notify-email" type="email" value={settings.notify_email || ""} onChange={(e) => setSettings((s) => ({ ...s, notify_email: e.target.value }))} placeholder="you@example.com" className={inputCls} />
                 <p className="mt-1.5 text-xs text-mutedwarm">Every new website enquiry is emailed instantly to this address. Leave empty to pause alerts.</p>
               </div>
+              <div>
+                <label className="mb-1.5 block font-btn text-xs font-semibold tracking-[0.15em] uppercase text-inksoft">Enquiry Alert Phone (SMS)</label>
+                <input data-testid="settings-notify-phone" value={settings.notify_phone || ""} onChange={(e) => setSettings((s) => ({ ...s, notify_phone: e.target.value }))} placeholder="+91 ..." className={inputCls} />
+                <p className="mt-1.5 text-xs text-mutedwarm">New enquiries are texted to this number once SMS is connected. Leave empty to pause SMS alerts.</p>
+              </div>
               <button data-testid="settings-save-button" type="submit" className="rounded-full bg-espresso px-8 py-3.5 font-btn text-sm font-semibold text-cream transition-colors hover:bg-copper">
                 Save Changes
               </button>

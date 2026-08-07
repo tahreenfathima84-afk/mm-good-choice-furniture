@@ -38,6 +38,9 @@ Build a complete, production-ready, Awwwards-level luxury website for M M Good C
 - Search + filter combine (e.g. Beds + "king" → only king beds); elegant empty state with "No furniture found matching your search." + Clear Search button
 - Mobile: search bar full-width, category pills horizontally scrollable, results animate with staggered fade/scale (no page reload)
 - Enquiry email alerts (Emergent-managed Resend): every new enquiry triggers a branded HTML email to settings.notify_email; non-blocking (asyncio task), failures never break enquiry submission; recipient editable in dashboard Settings ("Enquiry Alert Email"), empty = alerts paused. Tested live with 202 Accepted.
+- Customer auto-reply email: enquiry form now has optional Email field; if given, customer instantly gets a branded thank-you/confirmation email (reply-to: mmchoicefurnituremunawae@gmail.com). Verified live (202).
+- Owner alert recipient set to mmchoicefurnituremunawae@gmail.com — NOTE: platform's deliverability protection returned 422 "undeliverable recipient" for this address on 2026-08-07; needs user to confirm spelling or use another address.
+- SMS alerts (Twilio Messages API): fully wired (send_sms_alert, non-blocking, graceful skip); activates when TWILIO_ACCOUNT_SID / TWILIO_AUTH_TOKEN / TWILIO_FROM_NUMBER are added to backend/.env; recipient = settings.notify_phone (dashboard "Enquiry Alert Phone (SMS)"). PENDING user Twilio credentials.
 
 ## Backlog
 - P0: Real owner must sign in once at /owner to claim ownership (then remove test user)

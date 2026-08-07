@@ -5,7 +5,7 @@ import { SectionHeading, Reveal, Magnetic } from "./Extras";
 import { api, PHONE_DISPLAY, PHONE_TEL, waLink, MAPS_DIRECTIONS, MAPS_EMBED } from "../lib/api";
 
 export default function Contact({ settings }) {
-  const [form, setForm] = useState({ name: "", phone: "", product: "", message: "" });
+  const [form, setForm] = useState({ name: "", phone: "", email: "", product: "", message: "" });
   const [sending, setSending] = useState(false);
 
   useEffect(() => {
@@ -26,7 +26,7 @@ export default function Contact({ settings }) {
     try {
       await api.post("/enquiries", form);
       toast.success("Thank you! We'll call you back shortly.");
-      setForm({ name: "", phone: "", product: "", message: "" });
+      setForm({ name: "", phone: "", email: "", product: "", message: "" });
     } catch {
       toast.error("Could not send your enquiry. Please try WhatsApp instead.");
     } finally {
@@ -106,6 +106,10 @@ export default function Contact({ settings }) {
                 <div>
                   <label htmlFor="cf-phone" className="mb-1.5 block font-btn text-xs font-semibold tracking-[0.15em] uppercase text-inksoft">Phone Number</label>
                   <input id="cf-phone" data-testid="contact-phone-input" value={form.phone} onChange={set("phone")} placeholder="+91 ..." className="w-full rounded-2xl border border-ink/10 bg-cream px-5 py-3.5 text-sm text-ink outline-none transition-colors duration-300 placeholder:text-mutedwarm focus:border-copper" />
+                </div>
+                <div>
+                  <label htmlFor="cf-email" className="mb-1.5 block font-btn text-xs font-semibold tracking-[0.15em] uppercase text-inksoft">Email (optional — for a confirmation email)</label>
+                  <input id="cf-email" data-testid="contact-email-input" type="email" value={form.email} onChange={set("email")} placeholder="you@example.com" className="w-full rounded-2xl border border-ink/10 bg-cream px-5 py-3.5 text-sm text-ink outline-none transition-colors duration-300 placeholder:text-mutedwarm focus:border-copper" />
                 </div>
                 <div>
                   <label htmlFor="cf-product" className="mb-1.5 block font-btn text-xs font-semibold tracking-[0.15em] uppercase text-inksoft">Interested In (optional)</label>

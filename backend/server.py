@@ -31,6 +31,10 @@ EMAIL_BASE_URL = "https://integrations.emergentagent.com"
 EMAIL_KEY = os.environ.get("EMERGENT_EMAIL_KEY")
 EMAIL_FROM_NAME = os.environ.get("EMAIL_FROM_NAME", "M M Good Choice Furniture")
 
+TWILIO_ACCOUNT_SID = os.environ.get("TWILIO_ACCOUNT_SID")
+TWILIO_AUTH_TOKEN = os.environ.get("TWILIO_AUTH_TOKEN")
+TWILIO_FROM_NUMBER = os.environ.get("TWILIO_FROM_NUMBER")
+
 
 def new_id(prefix: str) -> str:
     return f"{prefix}_{uuid.uuid4().hex[:12]}"
@@ -148,6 +152,7 @@ class EnquiryIn(BaseModel):
     phone: str
     message: str
     product: Optional[str] = ""
+    email: Optional[str] = ""
 
 
 class SettingsIn(BaseModel):
@@ -158,6 +163,7 @@ class SettingsIn(BaseModel):
     hours: Optional[str] = None
     address: Optional[str] = None
     notify_email: Optional[str] = None
+    notify_phone: Optional[str] = None
 
 
 # ---------------- Products ----------------
@@ -270,6 +276,82 @@ async def send_enquiry_alert(doc):
         logger.error(f"Enquiry alert email error: {e}")
 
 
+async def send_customer_autoreply(doc):
+    try:
+        recipient = (doc.get("email") or "").strip()
+        if not recipient or not EMAIL_KEY:
+            return
+        first_name = (doc.get("name", "").split(" ")[0] or "there")
+        product_line = f"<p style='margin:0 0 12px;font-size:15px;color:#2D2622;'>Your interest in <strong>{doc.get('product')}</strong> has been noted.</p>" if doc.get("product") else ""
+        html = f"""
+        <div style="background:#F7F5F0;padding:32px 16px;font-family:Arial,Helvetica,sans-serif;">
+          <div style="max-width:560px;margin:0 auto;background:#F9F8F6;border-radius:16px;overflow:hidden;border:1px solid #E3DECF;">
+            <div style="background:#3B2F2F;padding:24px 28px;">
+              <p style="margin:0;font-size:18px;font-weight:800;color:#D4AF37;">M M Good Choice Furniture</p>
+              <p style="margin:6px 0 0;font-size:13px;color:#F7F5F0;">Premium Wooden Furniture Crafted for Beautiful Homes</p>
+            </div>
+            <div style="padding:28px;">
+              <p style="margin:0 0 12px;font-size:16px;color:#2D2622;">Dear {first_name},</p>
+              <p style="margin:0 0 12px;font-size:15px;color:#5C524A;line-height:1.6;">Thank you for your enquiry! We have received your message and our team will call you back shortly on <strong>{doc.get('phone', '')}</strong>.</p>
+              {product_line}
+              <p style="margin:16px 0 0;font-size:15px;color:#5C524A;line-height:1.6;">Need us sooner? Call or WhatsApp us anytime on <strong>+91 91106 90642</strong>.</p>
+            </div>
+            <div style="padding:20px 28px;border-top:1px solid #E3DECF;background:#F7F5F0;">
+              <p style="margin:0;font-size:12px;color:#8A8077;line-height:1.6;">M M Good Choice Furniture · Thambuchetty Palya, TC Palya, Krishnarajapuram, Bengaluru 560036<br/>Open Daily · Till 7:30 PM</p>
+            </div>
+          </div>
+        </div>"""
+        payload = {
+            "to": [recipient],
+            "subject": "Thank you for your enquiry — M M Good Choice Furniture",
+            "html": html,
+            "from_name": EMAIL_FROM_NAME,
+            "contact_email": "mmchoicefurnituremunawae@gmail.com",
+        }
+        async with httpx.AsyncClient(timeout=30) as client:
+            resp = await client.post(
+                f"{EMAIL_BASE_URL}/api/v1/email/send",
+                headers={"X-Email-Key": EMAIL_KEY},
+                json=payload,
+            )
+        if resp.status_code >= 400:
+            logger.error(f"Auto-reply email failed: {resp.status_code} {resp.text}")
+        else:
+            logger.info(f"Auto-reply email sent to {recipient}")
+    except Exception as e:
+        logger.error(f"Auto-reply email error: {e}")
+
+
+async def send_sms_alert(doc):
+    try:
+        if not (TWILIO_ACCOUNT_SID and TWILIO_AUTH_TOKEN and TWILIO_FROM_NUMBER):
+            return
+        settings = await db.settings.find_one({"key": "site"}, {"_id": 0}) or {}
+        recipient = (settings.get("notify_phone") or "").strip()
+        if not recipient:
+            return
+        body = (
+            "New Enquiry - M M Good Choice Furniture\n"
+            f"Name: {doc.get('name', '')}\n"
+            f"Phone: {doc.get('phone', '')}\n"
+            f"Interested In: {doc.get('product') or 'General'}\n"
+            f"Message: {doc.get('message', '')}"
+        )
+        url = f"https://api.twilio.com/2010-04-01/Accounts/{TWILIO_ACCOUNT_SID}/Messages.json"
+        async with httpx.AsyncClient(timeout=30) as client:
+            resp = await client.post(
+                url,
+                auth=(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN),
+                data={"From": TWILIO_FROM_NUMBER, "To": recipient, "Body": body},
+            )
+        if resp.status_code >= 400:
+            logger.error(f"SMS alert failed: {resp.status_code} {resp.text}")
+        else:
+            logger.info(f"SMS alert sent to {recipient}")
+    except Exception as e:
+        logger.error(f"SMS alert error: {e}")
+
+
 @api_router.post("/enquiries")
 async def create_enquiry(e: EnquiryIn):
     if not e.name.strip() or not e.phone.strip() or not e.message.strip():
@@ -281,6 +363,8 @@ async def create_enquiry(e: EnquiryIn):
     await db.enquiries.insert_one(doc)
     doc.pop("_id", None)
     asyncio.create_task(send_enquiry_alert(doc))
+    asyncio.create_task(send_customer_autoreply(doc))
+    asyncio.create_task(send_sms_alert(doc))
     return doc
 
 
@@ -309,6 +393,7 @@ DEFAULT_SETTINGS = {
     "hours": "Open Daily · Till 7:30 PM",
     "address": "Thambuchetty Palya, TC Palya, Krishnarajapuram, Bengaluru, Karnataka 560036",
     "notify_email": "",
+    "notify_phone": "",
 }
 
 
