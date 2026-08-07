@@ -23,7 +23,7 @@ export default function Footer({ settings }) {
           <div className="md:col-span-3">
             <p className="font-btn text-xs font-semibold tracking-[0.3em] uppercase text-gold">Explore</p>
             <ul className="mt-5 space-y-3">
-              {[["collections", "Collections"], ["gallery", "Gallery"], ["why-us", "Why Choose Us"], ["testimonials", "Customer Stories"], ["contact", "Contact"]].map(([id, label]) => (
+              {[["collections", "Collections"], ["latest-furniture", "Our Latest Furniture"], ["why-us", "Why Choose Us"], ["testimonials", "Customer Stories"], ["contact", "Contact"]].map(([id, label]) => (
                 <li key={id}>
                   <button data-testid={`footer-link-${id}`} onClick={() => scrollToId(id)} className="text-sm text-cream/70 transition-colors duration-300 hover:text-gold">
                     {label}

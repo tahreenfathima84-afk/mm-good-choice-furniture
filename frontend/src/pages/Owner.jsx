@@ -143,17 +143,13 @@ export default function Owner() {
   const [user, setUser] = useState(location.state?.user || null);
   const [tab, setTab] = useState("overview");
   const [products, setProducts] = useState([]);
-  const [gallery, setGallery] = useState([]);
   const [enquiries, setEnquiries] = useState([]);
   const [settings, setSettings] = useState(null);
   const [editing, setEditing] = useState(null);
   const [adding, setAdding] = useState(false);
-  const [galleryUrl, setGalleryUrl] = useState("");
-  const [galleryTitle, setGalleryTitle] = useState("");
 
   const loadAll = useCallback(() => {
     api.get("/products").then((r) => setProducts(r.data)).catch(() => {});
-    api.get("/gallery").then((r) => setGallery(r.data)).catch(() => {});
     api.get("/enquiries").then((r) => setEnquiries(r.data)).catch(() => {});
     api.get("/settings").then((r) => setSettings(r.data)).catch(() => {});
   }, []);
@@ -191,7 +187,6 @@ export default function Owner() {
     ["overview", "Overview", LayoutDashboard],
     ["products", "Products", Package],
     ["catalogue", "Latest Furniture", Armchair],
-    ["gallery", "Gallery", Images],
     ["enquiries", "Enquiries", Inbox],
     ["settings", "Settings", SettingsIcon],
   ];
@@ -212,14 +207,6 @@ export default function Owner() {
     await api.delete(`/products/${id}`);
     setProducts((p) => p.filter((x) => x.product_id !== id));
     toast.success("Product removed.");
-  };
-
-  const addGallery = async (url, title) => {
-    if (!url) { toast.error("Add an image URL or upload a photo."); return; }
-    const r = await api.post("/gallery", { url, title });
-    setGallery((g) => [r.data, ...g]);
-    setGalleryUrl(""); setGalleryTitle("");
-    toast.success("Photo added to gallery.");
   };
 
   const inputCls = "w-full rounded-2xl border border-ink/10 bg-cream px-4 py-3 text-sm text-ink outline-none transition-colors focus:border-copper";
@@ -264,7 +251,7 @@ export default function Owner() {
         <div className="mt-8">
           {tab === "overview" && (
             <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-              {[["Products Live", products.length], ["Gallery Photos", gallery.length], ["Total Enquiries", enquiries.length], ["New Enquiries", enquiries.filter((e) => e.status === "new").length]].map(([label, val]) => (
+              {[["Products Live", products.length], ["Total Enquiries", enquiries.length], ["New Enquiries", enquiries.filter((e) => e.status === "new").length]].map(([label, val]) => (
                 <div key={label} className="rounded-3xl bg-espresso p-7 shadow-luxury">
                   <p className="font-display text-4xl font-extrabold text-gradient-gold">{val}</p>
                   <p className="mt-2 font-btn text-xs font-semibold tracking-[0.2em] uppercase text-cream/70">{label}</p>
@@ -272,7 +259,7 @@ export default function Owner() {
               ))}
               <div className="rounded-3xl bg-cream p-7 shadow-luxury sm:col-span-2 lg:col-span-4">
                 <p className="font-display text-lg font-bold text-ink">Welcome back{user?.name ? `, ${user.name.split(" ")[0]}` : ""}.</p>
-                <p className="mt-1 text-sm text-inksoft">Manage products, gallery photos, offers and customer enquiries from the tabs above. Changes go live on the website instantly.</p>
+                <p className="mt-1 text-sm text-inksoft">Manage products, latest furniture, offers and customer enquiries from the tabs above. Changes go live on the website instantly.</p>
               </div>
             </div>
           )}
@@ -311,36 +298,6 @@ export default function Owner() {
           )}
 
           {tab === "catalogue" && <CatalogueManager />}
-
-          {tab === "gallery" && (
-            <div>
-              <div className="mb-6 rounded-3xl bg-cream p-6 shadow-luxury">
-                <p className="mb-4 font-display text-base font-bold text-ink">Add Photo</p>
-                <div className="flex flex-wrap items-center gap-3">
-                  <input data-testid="gallery-add-url" value={galleryUrl} onChange={(e) => setGalleryUrl(e.target.value)} placeholder="Image URL" className={`${inputCls} max-w-xs`} />
-                  <input data-testid="gallery-add-title" value={galleryTitle} onChange={(e) => setGalleryTitle(e.target.value)} placeholder="Title" className={`${inputCls} max-w-[180px]`} />
-                  <label className="cursor-pointer rounded-full bg-stone px-5 py-3 font-btn text-xs font-semibold text-ink transition-colors hover:bg-copper hover:text-cream">
-                    Upload Photo
-                    <input data-testid="gallery-add-file" type="file" accept="image/*" className="hidden" onChange={async (e) => { const f = e.target.files?.[0]; if (f) setGalleryUrl(await fileToDataUrl(f)); }} />
-                  </label>
-                  <button data-testid="gallery-add-button" onClick={() => addGallery(galleryUrl, galleryTitle)} className="flex items-center gap-2 rounded-full bg-espresso px-6 py-3 font-btn text-xs font-semibold text-cream transition-colors hover:bg-copper">
-                    <Plus size={14} /> Add
-                  </button>
-                </div>
-              </div>
-              <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-                {gallery.map((g) => (
-                  <div key={g.image_id} data-testid={`dash-gallery-${g.image_id}`} className="group relative overflow-hidden rounded-2xl">
-                    <img src={g.url} alt={g.title} className="h-40 w-full object-cover" />
-                    <button data-testid={`delete-gallery-${g.image_id}`} onClick={async () => { await api.delete(`/gallery/${g.image_id}`); setGallery((x) => x.filter((i) => i.image_id !== g.image_id)); toast.success("Photo removed."); }} aria-label="Delete photo" className="absolute right-2 top-2 grid h-8 w-8 place-items-center rounded-full bg-espresso/80 text-cream opacity-0 transition-opacity group-hover:opacity-100 hover:bg-red-800">
-                      <Trash2 size={13} />
-                    </button>
-                    {g.title && <p className="absolute bottom-2 left-2 rounded-full bg-espresso/70 px-3 py-1 text-[10px] font-semibold text-cream">{g.title}</p>}
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
 
           {tab === "enquiries" && (
             <div className="space-y-4">

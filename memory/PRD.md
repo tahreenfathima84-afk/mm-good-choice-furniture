@@ -50,6 +50,11 @@ Build a complete, production-ready, Awwwards-level luxury website for M M Good C
 - Catalogue expanded to 10 real products (5 new: 3+1+1 Sofa Set, 4-Seater Dining Table, TV Wall Unit, 6-Seater Dining Table, L-Shape Corner Sofa Set with Ottoman — all marked New Arrival, tan L-shape Featured); grid now xl:grid-cols-4 / lg:3 / sm:2 / mobile:1; Mongo-backed so it scales to 50+ products with no rebuild
 - Floating WhatsApp button site-wide (bottom-right; desktop pill "WhatsApp Us", mobile compact circle; direct wa.me link with pre-filled message; back-to-top moved above it to avoid overlap)
 
+## Updates (2026-08-07, final)
+- OLD AI Gallery COMPLETELY REMOVED: Gallery.jsx deleted, section removed from Home, gallery collection dropped, backend /api/gallery endpoints + SEED_GALLERY + seeding removed, FALLBACK_GALLERY removed from content.js, dashboard Gallery tab removed
+- Navigation: "Gallery" replaced with "Our Latest Furniture" (smooth-scrolls to #latest-furniture); footer quick links updated to match
+- 5 real bed photos added to catalogue (Storage Bed, King Size Bed [Featured], Tufted Headboard Bed, Bed with Side Storage [auto-rotated upright], Wooden Bed) — Beds ₹8,500–₹40,000 with sizes 4×6/5×6.5/6×6.5; catalogue now 15 real products (7 sofas, 5 beds, 2 dining, 1 TV unit)
+
 ## Backlog
 - P0: Real owner must sign in once at /owner to claim ownership (then remove test user)
 - P1: Replace stock photos with real showroom photography via dashboard uploads

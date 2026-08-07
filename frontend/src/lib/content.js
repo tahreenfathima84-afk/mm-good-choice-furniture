@@ -34,33 +34,6 @@ export const FALLBACK_PRODUCTS = [
   { product_id: "fb8", name: "Walnut Coffee Table", category: "Coffee Tables", price_label: "Request Price", "description": "Center coffee table in rich walnut tones.", image: u("photo-1594026112284-02bb6f3352fe", 1200), sizes: [] },
 ];
 
-export const FALLBACK_GALLERY = [
-  { image_id: "g1", url: u("photo-1616486338812-3dadae4b4ace", 1000), title: "Modern Living Room" },
-  { image_id: "g2", url: u("photo-1616594039964-ae9021a400a0", 1000), title: "Serene Bedroom" },
-  { image_id: "g3", url: u("photo-1617806118233-18e1de247200", 1000), title: "Warm Wood Tones" },
-  { image_id: "g4", url: u("photo-1615873968403-89e068629265", 1000), title: "Family Lounge" },
-  { image_id: "g5", url: u("photo-1540574163026-643ea20ade25", 1000), title: "Classic Bedroom" },
-  { image_id: "g6", url: u("photo-1600210492486-724fe5c67fb0", 1000), title: "Elegant Interiors" },
-  { image_id: "g7", url: u("photo-1600607687939-ce8a6c25118c", 1000), title: "Contemporary Home" },
-  { image_id: "g8", url: u("photo-1600566753086-00f18fb6b3ea", 1000), title: "Apartment Living" },
-  { image_id: "g9", url: u("photo-1618220179428-22790b461013", 1000), title: "Designer Corner" },
-  { image_id: "g10", url: u("photo-1615529182904-14819c35db37", 1000), title: "Plush Seating" },
-  { image_id: "g11", url: u("photo-1598928506311-c55ded91a20c", 1000), title: "Cozy Living Space" },
-  { image_id: "g12", url: u("photo-1583847268964-b28dc8f51f92", 1000), title: "Evening Ambience" },
-  { image_id: "g13", url: u("photo-1615874959474-d609969a20ed", 1000), title: "Neutral Bedroom" },
-  { image_id: "g14", url: u("photo-1631679706909-1844bbd07221", 1000), title: "Modern Apartment" },
-  { image_id: "g15", url: u("photo-1567767292278-a4f21aa2d36e", 1000), title: "Beige Comfort" },
-  { image_id: "g16", url: u("photo-1549497538-303791108f95", 1000), title: "Accent Chair" },
-  { image_id: "g17", url: u("photo-1522708323590-d24dbb6b0267", 1000), title: "City Apartment" },
-  { image_id: "g18", url: u("photo-1493809842364-78817add7ffb", 1000), title: "Bright Living Room" },
-  { image_id: "g19", url: u("photo-1598300042247-d088f8ab3a91", 1000), title: "Studio Sofa" },
-  { image_id: "g20", url: u("photo-1600121848594-d8644e57abab", 1000), title: "Luxury Suite" },
-  { image_id: "g21", url: u("photo-1616046229478-9901c5536a45", 1000), title: "Curated Interiors" },
-  { image_id: "g22", url: u("photo-1519710889408-a67e1c7e0452", 1000), title: "Restful Bedroom" },
-  { image_id: "g23", url: u("photo-1586105251261-72a756497a11", 1000), title: "Open Plan Living" },
-  { image_id: "g24", url: u("photo-1554995207-c18c203602cb", 1000), title: "Urban Home" },
-];
-
 export const MANIFESTO = [
   { num: "01", title: "10+ Years of Craft", text: "A decade of shaping Bengaluru homes with furniture that outlives trends." },
   { num: "02", title: "Premium Quality Wood", text: "Seasoned, termite-treated hardwoods and finishes that age gracefully." },

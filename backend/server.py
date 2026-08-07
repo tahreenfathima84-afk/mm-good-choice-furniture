@@ -195,12 +195,6 @@ class ProductIn(BaseModel):
     featured: bool = False
 
 
-class GalleryIn(BaseModel):
-    url: str
-    title: str = ""
-    category: str = "Showroom"
-
-
 class EnquiryIn(BaseModel):
     name: str
     phone: str
@@ -261,31 +255,6 @@ async def delete_product(product_id: str, user=Depends(require_owner)):
     res = await db.products.delete_one({"product_id": product_id})
     if res.deleted_count == 0:
         raise HTTPException(status_code=404, detail="Product not found")
-    return {"ok": True}
-
-
-# ---------------- Gallery ----------------
-
-@api_router.get("/gallery")
-async def list_gallery():
-    return await db.gallery.find({}, {"_id": 0}).to_list(500)
-
-
-@api_router.post("/gallery")
-async def create_gallery_item(g: GalleryIn, user=Depends(require_owner)):
-    doc = g.model_dump()
-    doc["image_id"] = new_id("img")
-    doc["created_at"] = now_iso()
-    await db.gallery.insert_one(doc)
-    doc.pop("_id", None)
-    return doc
-
-
-@api_router.delete("/gallery/{image_id}")
-async def delete_gallery_item(image_id: str, user=Depends(require_owner)):
-    res = await db.gallery.delete_one({"image_id": image_id})
-    if res.deleted_count == 0:
-        raise HTTPException(status_code=404, detail="Image not found")
     return {"ok": True}
 
 
@@ -556,34 +525,6 @@ SEED_PRODUCTS = [
     {"name": "6-Seater Dining Set", "category": "Dining Tables", "price_label": "₹16,000 – ₹35,000", "description": "Family dining set with upholstered chairs and scratch-resistant top.", "image": U("photo-1519710164239-da123dc03ef4"), "sizes": [], "featured": False},
 ]
 
-SEED_GALLERY = [
-    {"url": U("photo-1616486338812-3dadae4b4ace"), "title": "Modern Living Room", "category": "Living"},
-    {"url": U("photo-1616594039964-ae9021a400a0"), "title": "Serene Bedroom", "category": "Bedroom"},
-    {"url": U("photo-1617806118233-18e1de247200"), "title": "Warm Wood Tones", "category": "Bedroom"},
-    {"url": U("photo-1615873968403-89e068629265"), "title": "Family Lounge", "category": "Living"},
-    {"url": U("photo-1540574163026-643ea20ade25"), "title": "Classic Bedroom", "category": "Bedroom"},
-    {"url": U("photo-1600210492486-724fe5c67fb0"), "title": "Elegant Interiors", "category": "Living"},
-    {"url": U("photo-1600607687939-ce8a6c25118c"), "title": "Contemporary Home", "category": "Living"},
-    {"url": U("photo-1600566753086-00f18fb6b3ea"), "title": "Apartment Living", "category": "Living"},
-    {"url": U("photo-1618220179428-22790b461013"), "title": "Designer Corner", "category": "Living"},
-    {"url": U("photo-1615529182904-14819c35db37"), "title": "Plush Seating", "category": "Sofas"},
-    {"url": U("photo-1598928506311-c55ded91a20c"), "title": "Cozy Living Space", "category": "Living"},
-    {"url": U("photo-1583847268964-b28dc8f51f92"), "title": "Evening Ambience", "category": "Living"},
-    {"url": U("photo-1615874959474-d609969a20ed"), "title": "Neutral Bedroom", "category": "Bedroom"},
-    {"url": U("photo-1631679706909-1844bbd07221"), "title": "Modern Apartment", "category": "Living"},
-    {"url": U("photo-1567767292278-a4f21aa2d36e"), "title": "Beige Comfort", "category": "Sofas"},
-    {"url": U("photo-1549497538-303791108f95"), "title": "Accent Chair", "category": "Sofas"},
-    {"url": U("photo-1522708323590-d24dbb6b0267"), "title": "City Apartment", "category": "Living"},
-    {"url": U("photo-1493809842364-78817add7ffb"), "title": "Bright Living Room", "category": "Living"},
-    {"url": U("photo-1598300042247-d088f8ab3a91"), "title": "Studio Sofa", "category": "Sofas"},
-    {"url": U("photo-1600121848594-d8644e57abab"), "title": "Luxury Suite", "category": "Bedroom"},
-    {"url": U("photo-1616046229478-9901c5536a45"), "title": "Curated Interiors", "category": "Living"},
-    {"url": U("photo-1519710889408-a67e1c7e0452"), "title": "Restful Bedroom", "category": "Bedroom"},
-    {"url": U("photo-1586105251261-72a756497a11"), "title": "Open Plan Living", "category": "Living"},
-    {"url": U("photo-1554995207-c18c203602cb"), "title": "Urban Home", "category": "Living"},
-]
-
-
 CATALOGUE_SEED = [
     {"url": "https://customer-assets-lxgj4vgw.emergentagent.net/job_elegant-home-furnish-3/artifacts/caigwsq8_WhatsApp%20Image%202026-08-07%20at%203.00.29%20PM%20%283%29.jpeg", "name": "3 + 2 Sofa Set", "is_new": True, "is_featured": False},
     {"url": "https://customer-assets-lxgj4vgw.emergentagent.net/job_elegant-home-furnish-3/artifacts/s67s3nw9_WhatsApp%20Image%202026-08-07%20at%203.00.29%20PM%20%282%29.jpeg", "name": "L-Shape Corner Sofa Set", "is_new": True, "is_featured": True},
@@ -600,11 +541,6 @@ async def seed_database():
             p["product_id"] = new_id("prod")
             p["created_at"] = now_iso()
         await db.products.insert_many(SEED_PRODUCTS)
-    if await db.gallery.count_documents({}) == 0:
-        for g in SEED_GALLERY:
-            g["image_id"] = new_id("img")
-            g["created_at"] = now_iso()
-        await db.gallery.insert_many(SEED_GALLERY)
     if await db.settings.count_documents({}) == 0:
         await db.settings.insert_one(dict(DEFAULT_SETTINGS))
     if await db.catalogue.count_documents({}) == 0:

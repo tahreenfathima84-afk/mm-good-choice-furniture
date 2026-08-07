@@ -6,7 +6,7 @@ import { PHONE_TEL, waLink } from "../lib/api";
 
 const LINKS = [
   { id: "collections", label: "Collections" },
-  { id: "gallery", label: "Gallery" },
+  { id: "latest-furniture", label: "Our Latest Furniture" },
   { id: "why-us", label: "Why Us" },
   { id: "testimonials", label: "Stories" },
   { id: "contact", label: "Contact" },

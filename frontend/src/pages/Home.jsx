@@ -6,7 +6,6 @@ import Navbar from "../components/Navbar";
 import Hero from "../components/Hero";
 import EditorialMarquee from "../components/Marquee";
 import Collections from "../components/Collections";
-import Gallery from "../components/Gallery";
 import Manifesto from "../components/Manifesto";
 import Testimonials from "../components/Testimonials";
 import LatestFurniture from "../components/LatestFurniture";
@@ -54,7 +53,6 @@ export default function Home() {
         <EditorialMarquee />
         <Collections />
         <Manifesto />
-        <Gallery />
         <Testimonials />
         <LatestFurniture />
         <Contact settings={settings} />
