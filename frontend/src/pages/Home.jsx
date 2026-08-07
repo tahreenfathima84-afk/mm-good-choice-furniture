@@ -12,6 +12,7 @@ import Testimonials from "../components/Testimonials";
 import LatestFurniture from "../components/LatestFurniture";
 import Contact from "../components/Contact";
 import Footer from "../components/Footer";
+import FloatingWhatsApp from "../components/FloatingWhatsApp";
 import { MouseGlow, BackToTop } from "../components/Extras";
 import { api } from "../lib/api";
 
@@ -60,6 +61,7 @@ export default function Home() {
       </main>
       <Footer settings={settings} />
       <BackToTop />
+      <FloatingWhatsApp />
     </div>
   );
 }

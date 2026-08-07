@@ -47,6 +47,8 @@ Build a complete, production-ready, Awwwards-level luxury website for M M Good C
 - 5 REAL owner-uploaded sofa photos seeded into new `catalogue` Mongo collection; images enhanced presentation-only via Pillow pipeline (watermark-bar crop, gray-world white balance, autocontrast, brightness, sharpness) — furniture never altered; served as static files from /api/uploads/catalogue/
 - Backend: GET /api/catalogue (public, hides hidden), GET /api/catalogue/all + POST/PUT/DELETE (owner); uploads accept data-URL photos, auto-enhance, save to /app/backend/uploads/catalogue/
 - Owner dashboard: new "Latest Furniture" tab — add (photo+name+category+price+description+New/Featured), edit, replace photo, hide/restore, delete
+- Catalogue expanded to 10 real products (5 new: 3+1+1 Sofa Set, 4-Seater Dining Table, TV Wall Unit, 6-Seater Dining Table, L-Shape Corner Sofa Set with Ottoman — all marked New Arrival, tan L-shape Featured); grid now xl:grid-cols-4 / lg:3 / sm:2 / mobile:1; Mongo-backed so it scales to 50+ products with no rebuild
+- Floating WhatsApp button site-wide (bottom-right; desktop pill "WhatsApp Us", mobile compact circle; direct wa.me link with pre-filled message; back-to-top moved above it to avoid overlap)
 
 ## Backlog
 - P0: Real owner must sign in once at /owner to claim ownership (then remove test user)

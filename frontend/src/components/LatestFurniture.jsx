@@ -253,7 +253,7 @@ export default function LatestFurniture() {
             </button>
           </motion.div>
         ) : (
-          <motion.div layout className="mt-12 grid gap-7 sm:grid-cols-2 lg:grid-cols-3">
+          <motion.div layout className="mt-12 grid gap-7 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             <AnimatePresence mode="popLayout">
               {visible.map((item, i) => (
                 <CatalogueCard key={item.catalogue_id} item={item} index={i} onView={openItem} />

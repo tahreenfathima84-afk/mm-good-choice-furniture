@@ -125,7 +125,7 @@ export function BackToTop() {
       initial={false}
       animate={{ opacity: show ? 1 : 0, y: show ? 0 : 20, pointerEvents: show ? "auto" : "none" }}
       transition={{ duration: 0.4, ease: EASE }}
-      className="fixed bottom-6 right-6 z-40 grid h-12 w-12 place-items-center rounded-full bg-espresso text-cream shadow-luxury hover:bg-copper transition-colors duration-300"
+      className="fixed bottom-24 right-6 z-40 grid h-12 w-12 place-items-center rounded-full bg-espresso text-cream shadow-luxury hover:bg-copper transition-colors duration-300"
     >
       <ArrowUp size={20} />
     </motion.button>
