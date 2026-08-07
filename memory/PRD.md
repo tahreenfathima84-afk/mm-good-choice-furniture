@@ -37,6 +37,7 @@ Build a complete, production-ready, Awwwards-level luxury website for M M Good C
 - Category filter groups: All, Tables, Sofas, Beds, TV / LCD Stands, Shoe Racks, Wardrobes, Office Furniture, Custom Furniture
 - Search + filter combine (e.g. Beds + "king" → only king beds); elegant empty state with "No furniture found matching your search." + Clear Search button
 - Mobile: search bar full-width, category pills horizontally scrollable, results animate with staggered fade/scale (no page reload)
+- Enquiry email alerts (Emergent-managed Resend): every new enquiry triggers a branded HTML email to settings.notify_email; non-blocking (asyncio task), failures never break enquiry submission; recipient editable in dashboard Settings ("Enquiry Alert Email"), empty = alerts paused. Tested live with 202 Accepted.
 
 ## Backlog
 - P0: Real owner must sign in once at /owner to claim ownership (then remove test user)

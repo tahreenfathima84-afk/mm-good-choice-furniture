@@ -5,7 +5,9 @@ from motor.motor_asyncio import AsyncIOMotorClient
 import os
 import logging
 import uuid
+import asyncio
 import requests
+import httpx
 from pathlib import Path
 from pydantic import BaseModel
 from typing import Optional, List
@@ -22,6 +24,12 @@ app = FastAPI()
 api_router = APIRouter(prefix="/api")
 
 SESSION_DATA_URL = "https://demobackend.emergentagent.com/auth/v1/env/oauth/session-data"
+
+# Emergent managed email proxy. This is a CONSTANT — never read it from
+# os.environ, so it survives deployment.
+EMAIL_BASE_URL = "https://integrations.emergentagent.com"
+EMAIL_KEY = os.environ.get("EMERGENT_EMAIL_KEY")
+EMAIL_FROM_NAME = os.environ.get("EMAIL_FROM_NAME", "M M Good Choice Furniture")
 
 
 def new_id(prefix: str) -> str:
@@ -149,6 +157,7 @@ class SettingsIn(BaseModel):
     phone: Optional[str] = None
     hours: Optional[str] = None
     address: Optional[str] = None
+    notify_email: Optional[str] = None
 
 
 # ---------------- Products ----------------
@@ -211,6 +220,56 @@ async def delete_gallery_item(image_id: str, user=Depends(require_owner)):
 
 # ---------------- Enquiries ----------------
 
+async def send_enquiry_alert(doc):
+    try:
+        settings = await db.settings.find_one({"key": "site"}, {"_id": 0}) or {}
+        recipient = (settings.get("notify_email") or "").strip()
+        if not recipient or not EMAIL_KEY:
+            return
+        row = lambda label, value: f"""
+          <tr>
+            <td style="padding:10px 16px;font-size:12px;letter-spacing:1px;text-transform:uppercase;color:#8A8077;width:130px;">{label}</td>
+            <td style="padding:10px 16px;font-size:15px;color:#2D2622;font-weight:600;">{value}</td>
+          </tr>"""
+        html = f"""
+        <div style="background:#F7F5F0;padding:32px 16px;font-family:Arial,Helvetica,sans-serif;">
+          <div style="max-width:560px;margin:0 auto;background:#F9F8F6;border-radius:16px;overflow:hidden;border:1px solid #E3DECF;">
+            <div style="background:#3B2F2F;padding:24px 28px;">
+              <p style="margin:0;font-size:18px;font-weight:800;color:#D4AF37;">M M Good Choice Furniture</p>
+              <p style="margin:6px 0 0;font-size:13px;color:#F7F5F0;">New website enquiry received</p>
+            </div>
+            <table style="width:100%;border-collapse:collapse;background:#F9F8F6;">
+              {row("Name", doc.get("name", ""))}
+              {row("Phone", doc.get("phone", ""))}
+              {row("Interested In", doc.get("product") or "—")}
+              {row("Message", doc.get("message", ""))}
+              {row("Received", doc.get("created_at", ""))}
+            </table>
+            <div style="padding:20px 28px;border-top:1px solid #E3DECF;">
+              <p style="margin:0;font-size:12px;color:#8A8077;">Open your Owner Dashboard to view and manage all enquiries.</p>
+            </div>
+          </div>
+        </div>"""
+        payload = {
+            "to": [recipient],
+            "subject": f"New Enquiry: {doc.get('name', '')} — {doc.get('product') or 'General'}",
+            "html": html,
+            "from_name": EMAIL_FROM_NAME,
+        }
+        async with httpx.AsyncClient(timeout=30) as client:
+            resp = await client.post(
+                f"{EMAIL_BASE_URL}/api/v1/email/send",
+                headers={"X-Email-Key": EMAIL_KEY},
+                json=payload,
+            )
+        if resp.status_code >= 400:
+            logger.error(f"Enquiry alert email failed: {resp.status_code} {resp.text}")
+        else:
+            logger.info(f"Enquiry alert email sent to {recipient}")
+    except Exception as e:
+        logger.error(f"Enquiry alert email error: {e}")
+
+
 @api_router.post("/enquiries")
 async def create_enquiry(e: EnquiryIn):
     if not e.name.strip() or not e.phone.strip() or not e.message.strip():
@@ -221,6 +280,7 @@ async def create_enquiry(e: EnquiryIn):
     doc["created_at"] = now_iso()
     await db.enquiries.insert_one(doc)
     doc.pop("_id", None)
+    asyncio.create_task(send_enquiry_alert(doc))
     return doc
 
 
@@ -248,6 +308,7 @@ DEFAULT_SETTINGS = {
     "phone": "+91 91106 90642",
     "hours": "Open Daily · Till 7:30 PM",
     "address": "Thambuchetty Palya, TC Palya, Krishnarajapuram, Bengaluru, Karnataka 560036",
+    "notify_email": "",
 }
 
 
