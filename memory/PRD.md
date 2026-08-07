@@ -60,6 +60,11 @@ Build a complete, production-ready, Awwwards-level luxury website for M M Good C
 - Our Latest Furniture default view restructured into per-category horizontal carousels (Sofas, Dining Tables, Beds, LCD/TV Stands, Shoe Racks, Wardrobes, Office, Coffee Tables, Other) with heading, piece count, left/right arrows, scroll-snap swipe on mobile (~1.2 cards visible); search/filter switches to results grid; viewer unchanged
 - 5 more real photos added: 3-Door Wardrobe, Wall-Mounted TV Unit (Featured), 4-Door Wardrobe with Drawers, 4-Door Wardrobe, 2-Door Wardrobe with Mirror — catalogue now 20 real products (7 sofas, 5 beds, 4 wardrobes, 2 dining, 2 TV units)
 
+## Updates (2026-08-07, AI catalogue expansion)
+- 44 AI-generated furniture products added (Gemini 3.1 Flash Image / Nano Banana via EMERGENT_LLM_KEY): 5 each of Sofas, Dining Tables, Beds, LCD/TV Stands, Shoe Racks, Wardrobes, Office Furniture, Coffee Tables + 4 Other Furniture — consistent warm Indian showroom style, no people/text/logos, realistic local pricing (wardrobes ₹18,000–₹45,000, office ₹6,000–₹25,000, coffee ₹4,000–₹15,000, other ₹2,500–₹12,000)
+- Catalogue total: 64 products (20 real + 44 AI); existing real products untouched
+- PENDING: 45th image "Wooden Display Rack" (Other Furniture) failed — EMERGENT_LLM_KEY budget exceeded (2.99/2.93). User must top up: Profile → Manage plan → Universal Key → Add Balance, then re-run generation for that one item (script: /app/scripts/gen_furniture.py)
+
 ## Backlog
 - P0: Real owner must sign in once at /owner to claim ownership (then remove test user)
 - P1: Replace stock photos with real showroom photography via dashboard uploads
