@@ -1,9 +1,45 @@
 import { useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { MessageCircle, FileText } from "lucide-react";
+import { MessageCircle, FileText, Search, X, SearchX } from "lucide-react";
 import { SectionHeading, Reveal, Magnetic, scrollToId, EASE } from "./Extras";
 import { CATEGORIES, FALLBACK_PRODUCTS } from "../lib/content";
 import { api, waLink } from "../lib/api";
+
+const FILTER_GROUPS = [
+  { label: "All", match: null },
+  { label: "Tables", match: ["Dining Tables", "Coffee Tables"] },
+  { label: "Sofas", match: ["Luxury Sofas"] },
+  { label: "Beds", match: ["Beds"] },
+  { label: "TV / LCD Stands", match: ["TV Units", "LCD Stands"] },
+  { label: "Shoe Racks", match: ["Shoe Racks"] },
+  { label: "Wardrobes", match: ["Wardrobes"] },
+  { label: "Office Furniture", match: ["Office Furniture"] },
+  { label: "Custom Furniture", match: ["Custom Furniture"] },
+];
+
+const SEARCH_CATEGORY_MAP = [
+  { keys: ["tv", "lcd", "led", "television"], cats: ["TV Units", "LCD Stands"] },
+  { keys: ["dining"], cats: ["Dining Tables"] },
+  { keys: ["table"], cats: ["Dining Tables", "Coffee Tables"] },
+  { keys: ["coffee"], cats: ["Coffee Tables"] },
+  { keys: ["bed", "cot"], cats: ["Beds"] },
+  { keys: ["sofa", "couch", "seater"], cats: ["Luxury Sofas"] },
+  { keys: ["shoe", "footwear"], cats: ["Shoe Racks"] },
+  { keys: ["wardrobe", "almirah", "closet"], cats: ["Wardrobes"] },
+  { keys: ["office", "desk", "study"], cats: ["Office Furniture"] },
+  { keys: ["custom"], cats: ["Custom Furniture"] },
+  { keys: ["storage"], cats: ["Storage Units"] },
+];
+
+const matchesSearch = (p, query) => {
+  const q = query.toLowerCase().trim();
+  if (!q) return true;
+  const hay = `${p.name} ${p.category} ${p.description} ${(p.sizes || []).join(" ")}`.toLowerCase();
+  if (hay.includes(q)) return true;
+  return SEARCH_CATEGORY_MAP.some(
+    (g) => g.keys.some((k) => q.includes(k)) && g.cats.includes(p.category)
+  );
+};
 
 function ProductCard({ p, index }) {
   const requestQuote = () => {
@@ -76,6 +112,7 @@ function ProductCard({ p, index }) {
 export default function Collections() {
   const [products, setProducts] = useState(FALLBACK_PRODUCTS);
   const [filter, setFilter] = useState("All");
+  const [query, setQuery] = useState("");
 
   useEffect(() => {
     api.get("/products").then((r) => {
@@ -83,8 +120,15 @@ export default function Collections() {
     }).catch(() => {});
   }, []);
 
-  const cats = useMemo(() => ["All", ...new Set(products.map((p) => p.category))], [products]);
-  const visible = filter === "All" ? products : products.filter((p) => p.category === filter);
+  const visible = useMemo(() => {
+    const group = FILTER_GROUPS.find((g) => g.label === filter);
+    return products.filter((p) => {
+      const inGroup = !group?.match || group.match.includes(p.category);
+      return inGroup && matchesSearch(p, query);
+    });
+  }, [products, filter, query]);
+
+  const clearAll = () => { setQuery(""); setFilter("All"); };
 
   return (
     <section id="collections" data-testid="collections-section" className="noise-overlay relative bg-sand py-24 md:py-32">
@@ -99,32 +143,80 @@ export default function Collections() {
         </div>
 
         <Reveal delay={0.2} className="mt-10">
-          <div className="flex flex-wrap gap-2" data-testid="category-filters">
-            {cats.map((c) => (
+          <div className="relative max-w-xl">
+            <Search size={18} className="pointer-events-none absolute left-5 top-1/2 -translate-y-1/2 text-mutedwarm" />
+            <input
+              data-testid="product-search-input"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Search sofas, beds, dining tables, TV stands..."
+              className="w-full rounded-full border border-ink/10 bg-cream py-4 pl-12 pr-12 text-sm text-ink shadow-luxury outline-none transition-colors duration-300 placeholder:text-mutedwarm focus:border-copper"
+            />
+            {query && (
               <button
-                key={c}
-                data-testid={`filter-${c.replace(/\s+/g, "-").toLowerCase()}`}
-                onClick={() => setFilter(c)}
-                className={`rounded-full px-5 py-2.5 font-btn text-xs font-semibold tracking-wide transition-colors duration-300 ${filter === c ? "bg-espresso text-cream" : "bg-cream text-inksoft hover:bg-stone"}`}
+                data-testid="product-search-clear"
+                onClick={() => setQuery("")}
+                aria-label="Clear search"
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-mutedwarm transition-colors hover:text-copper"
               >
-                {c}
+                <X size={17} />
+              </button>
+            )}
+          </div>
+          <div
+            className="mt-5 flex gap-2 overflow-x-auto pb-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+            data-testid="category-filters"
+          >
+            {FILTER_GROUPS.map((g) => (
+              <button
+                key={g.label}
+                data-testid={`filter-${g.label.replace(/[\s/]+/g, "-").toLowerCase()}`}
+                onClick={() => setFilter(g.label)}
+                className={`shrink-0 whitespace-nowrap rounded-full px-5 py-2.5 font-btn text-xs font-semibold tracking-wide transition-colors duration-300 ${filter === g.label ? "bg-espresso text-cream" : "bg-cream text-inksoft hover:bg-stone"}`}
+              >
+                {g.label}
               </button>
             ))}
           </div>
         </Reveal>
 
-        <motion.div layout className="mt-12 grid gap-7 md:grid-cols-2 lg:grid-cols-3">
-          <AnimatePresence mode="popLayout">
-            {visible.map((p, i) => <ProductCard key={p.product_id} p={p} index={i} />)}
-          </AnimatePresence>
-        </motion.div>
+        {visible.length === 0 ? (
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, ease: EASE }}
+            data-testid="no-results-message"
+            className="mt-12 flex flex-col items-center rounded-3xl bg-cream px-8 py-16 text-center shadow-luxury"
+          >
+            <span className="grid h-16 w-16 place-items-center rounded-full bg-stone/70 text-copper">
+              <SearchX size={26} />
+            </span>
+            <p className="mt-6 font-display text-xl font-bold text-ink">No furniture found matching your search.</p>
+            <p className="mt-2 max-w-sm text-sm text-inksoft">Try a different keyword or browse the full collection.</p>
+            <button
+              data-testid="clear-search-button"
+              onClick={clearAll}
+              className="mt-7 rounded-full bg-espresso px-7 py-3 font-btn text-xs font-semibold tracking-wide text-cream transition-colors duration-300 hover:bg-copper"
+            >
+              Clear Search
+            </button>
+          </motion.div>
+        ) : (
+          <motion.div layout className="mt-12 grid gap-7 md:grid-cols-2 lg:grid-cols-3">
+            <AnimatePresence mode="popLayout">
+              {visible.map((p, i) => <ProductCard key={p.product_id} p={p} index={i} />)}
+            </AnimatePresence>
+          </motion.div>
+        )}
 
         <div className="mt-20 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-          {CATEGORIES.slice(0, 4).map((c, i) => (
+          {CATEGORIES.slice(0, 4).map((c, i) => {
+            const tileToGroup = { "Luxury Sofas": "Sofas", "Beds": "Beds", "Dining Tables": "Tables", "TV Units": "TV / LCD Stands" };
+            return (
             <Reveal key={c.name} delay={i * 0.08}>
               <button
                 data-testid={`category-tile-${c.name.replace(/\s+/g, "-").toLowerCase()}`}
-                onClick={() => setFilter(c.name)}
+                onClick={() => { setFilter(tileToGroup[c.name] || "All"); setQuery(""); scrollToId("collections"); }}
                 className="group relative block h-44 w-full overflow-hidden rounded-3xl text-left"
               >
                 <img src={c.image} alt={c.name} loading="lazy" className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110" />
@@ -135,7 +227,8 @@ export default function Collections() {
                 </div>
               </button>
             </Reveal>
-          ))}
+            );
+          })}
         </div>
       </div>
     </section>

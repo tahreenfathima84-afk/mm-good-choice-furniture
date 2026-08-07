@@ -31,6 +31,13 @@ Build a complete, production-ready, Awwwards-level luxury website for M M Good C
 - SEO: meta, OG tags, JSON-LD FurnitureStore schema
 - Motion: lenis smooth scroll, magnetic buttons, mouse glow, back-to-top, scroll reveals throughout
 
+## Updates (2026-08-07)
+- Testimonials rebuilt: 6 natural Indian-English sample reviews (Bengaluru areas, varied ratings/styles), initial-based avatars (no stock photos), per-review purchase context, verified badge support (renders only when verified: true; all current entries marked sample/verified: false in data)
+- Product search: case-insensitive keyword search with category-mapped synonyms (tv→TV/LCD stands, dining→dining tables, shoe→shoe racks, etc.)
+- Category filter groups: All, Tables, Sofas, Beds, TV / LCD Stands, Shoe Racks, Wardrobes, Office Furniture, Custom Furniture
+- Search + filter combine (e.g. Beds + "king" → only king beds); elegant empty state with "No furniture found matching your search." + Clear Search button
+- Mobile: search bar full-width, category pills horizontally scrollable, results animate with staggered fade/scale (no page reload)
+
 ## Backlog
 - P0: Real owner must sign in once at /owner to claim ownership (then remove test user)
 - P1: Replace stock photos with real showroom photography via dashboard uploads

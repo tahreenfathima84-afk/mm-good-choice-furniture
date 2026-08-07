@@ -72,11 +72,15 @@ export const MANIFESTO = [
   { num: "08", title: "Installation Support", text: "Every piece assembled, levelled and styled in your home by experts." },
 ];
 
+// SAMPLE testimonials (verified: false) — replace with real customer reviews later.
+// The verified badge in the UI renders ONLY when a review has verified: true.
 export const TESTIMONIALS = [
-  { name: "Lakshmi Narayan", area: "TC Palya", photo: "https://randomuser.me/api/portraits/women/65.jpg", text: "We furnished our entire 3BHK from M M Good Choice. The teak dining table is the heart of our home now — quality beyond what big showrooms offered us." },
-  { name: "Mohammed Rizwan", area: "Krishnarajapuram", photo: "https://randomuser.me/api/portraits/men/32.jpg", text: "Ordered a custom wardrobe and TV unit. Perfect measurements, beautiful finish, and installed in one day. Truly professional people." },
-  { name: "Anitha Shetty", area: "Ramamurthy Nagar", photo: "https://randomuser.me/api/portraits/women/44.jpg", text: "The sofa set we bought five years ago still looks brand new. When we needed beds for the kids' room, there was no second choice." },
-  { name: "Prakash Reddy", area: "Hoodi", photo: "https://randomuser.me/api/portraits/men/67.jpg", text: "Honest pricing and genuine wood. They delivered to our villa on time and the installation team was careful with every piece." },
+  { name: "Ramesh Kulkarni", area: "TC Palya", rating: 5, purchase: "Dining Table", color: "bg-espresso", text: "Good collection and the quality of the wood is really nice. Staff were helpful and explained all the options properly.", verified: false },
+  { name: "Shabana Begum", area: "KR Puram", rating: 5, purchase: "Sofa Set & Dining Table", color: "bg-copper", text: "We purchased a sofa set and dining table from here. Quality is good and the delivery was handled nicely.", verified: false },
+  { name: "Venkatesh Gowda", area: "Ramamurthy Nagar", rating: 4, purchase: "Queen Size Bed", color: "bg-olive", text: "Had a good experience. We were looking for a bed in a specific size and they helped us choose the right one.", verified: false },
+  { name: "Divya Ramesh", area: "Hoodi", rating: 5, purchase: "Coffee Table", color: "bg-royal", text: "Nice collection and reasonable pricing. The staff were also very friendly.", verified: false },
+  { name: "Imran Pasha", area: "Kalkere", rating: 5, purchase: "TV Unit", color: "bg-copper", text: "Bought a TV unit last month. Finishing is neat and they installed it the same evening itself. Happy with the purchase.", verified: false },
+  { name: "Suma Prakash", area: "Seegehalli", rating: 4, purchase: "Wardrobe", color: "bg-espresso", text: "This is our second purchase here. First a shoe rack, now a wardrobe. No complaints. Rate is also reasonable compared to big showrooms.", verified: false },
 ];
 
 export const STATS = [

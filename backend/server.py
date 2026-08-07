@@ -87,6 +87,7 @@ async def create_session(request: Request, response: Response):
             "created_at": now_iso(),
         }
         await db.users.insert_one(user)
+        user = await db.users.find_one({"email": email}, {"_id": 0})
     token = data["session_token"]
     await db.user_sessions.insert_one({
         "user_id": user["user_id"],
