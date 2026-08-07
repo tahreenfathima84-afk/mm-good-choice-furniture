@@ -6,12 +6,17 @@ import os
 import logging
 import uuid
 import asyncio
+import io
+import base64
 import requests
 import httpx
+import numpy as np
+from PIL import Image, ImageOps, ImageEnhance, ImageStat
 from pathlib import Path
 from pydantic import BaseModel
 from typing import Optional, List
 from datetime import datetime, timezone, timedelta
+from starlette.staticfiles import StaticFiles
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
@@ -34,6 +39,55 @@ EMAIL_FROM_NAME = os.environ.get("EMAIL_FROM_NAME", "M M Good Choice Furniture")
 TWILIO_ACCOUNT_SID = os.environ.get("TWILIO_ACCOUNT_SID")
 TWILIO_AUTH_TOKEN = os.environ.get("TWILIO_AUTH_TOKEN")
 TWILIO_FROM_NUMBER = os.environ.get("TWILIO_FROM_NUMBER")
+
+UPLOAD_DIR = ROOT_DIR / "uploads"
+(UPLOAD_DIR / "catalogue").mkdir(parents=True, exist_ok=True)
+
+
+def enhance_image(data: bytes) -> bytes:
+    """Presentation-only enhancement: crop phone watermark bars, correct white
+    balance/exposure, improve sharpness. The furniture itself is never altered."""
+    img = Image.open(io.BytesIO(data)).convert("RGB")
+    w, h = img.size
+    gray = img.convert("L")
+    step = max(2, int(h * 0.01))
+    crop_to = h
+    scanned = 0
+    while scanned < int(h * 0.14):
+        top = h - scanned - step
+        strip = gray.crop((0, top, w, h - scanned))
+        if ImageStat.Stat(strip).mean[0] > 190:
+            crop_to = top
+            scanned += step
+        else:
+            break
+    if crop_to < h:
+        img = img.crop((0, 0, w, crop_to))
+    arr = np.asarray(img).astype(np.float32)
+    means = arr.reshape(-1, 3).mean(axis=0)
+    gray = means.mean()
+    arr = np.clip(arr * (gray / np.maximum(means, 1)), 0, 255).astype(np.uint8)
+    img = Image.fromarray(arr)
+    img = ImageOps.autocontrast(img, cutoff=1)
+    if ImageStat.Stat(img.convert("L")).mean[0] < 100:
+        img = ImageEnhance.Brightness(img).enhance(1.12)
+    img = ImageEnhance.Color(img).enhance(1.06)
+    img = ImageEnhance.Contrast(img).enhance(1.05)
+    img = ImageEnhance.Sharpness(img).enhance(1.35)
+    if max(img.size) > 1600:
+        img.thumbnail((1600, 1600), Image.LANCZOS)
+    out = io.BytesIO()
+    img.save(out, "JPEG", quality=86, optimize=True)
+    return out.getvalue()
+
+
+def save_catalogue_image(data_url: str) -> str:
+    _, _, b64 = data_url.partition(",")
+    raw = base64.b64decode(b64)
+    enhanced = enhance_image(raw)
+    fname = f"cat_{uuid.uuid4().hex[:12]}.jpg"
+    (UPLOAD_DIR / "catalogue" / fname).write_bytes(enhanced)
+    return f"/api/uploads/catalogue/{fname}"
 
 
 def new_id(prefix: str) -> str:
@@ -155,6 +209,17 @@ class EnquiryIn(BaseModel):
     email: Optional[str] = ""
 
 
+class CatalogueIn(BaseModel):
+    name: str
+    category: str = "Other Furniture"
+    price_label: str = ""
+    description: str = ""
+    image: Optional[str] = None
+    is_new: bool = False
+    is_featured: bool = False
+    hidden: bool = False
+
+
 class SettingsIn(BaseModel):
     offer_text: Optional[str] = None
     offer_enabled: Optional[bool] = None
@@ -221,6 +286,58 @@ async def delete_gallery_item(image_id: str, user=Depends(require_owner)):
     res = await db.gallery.delete_one({"image_id": image_id})
     if res.deleted_count == 0:
         raise HTTPException(status_code=404, detail="Image not found")
+    return {"ok": True}
+
+
+# ---------------- Catalogue (Our Latest Furniture) ----------------
+
+@api_router.get("/catalogue")
+async def list_catalogue():
+    return await db.catalogue.find({"hidden": {"$ne": True}}, {"_id": 0}).sort("created_at", -1).to_list(500)
+
+
+@api_router.get("/catalogue/all")
+async def list_catalogue_all(user=Depends(require_owner)):
+    return await db.catalogue.find({}, {"_id": 0}).sort("created_at", -1).to_list(500)
+
+
+@api_router.post("/catalogue")
+async def create_catalogue_item(c: CatalogueIn, user=Depends(require_owner)):
+    if not c.image or not c.image.startswith("data:"):
+        raise HTTPException(status_code=400, detail="A photo is required")
+    doc = c.model_dump()
+    doc["image"] = save_catalogue_image(c.image)
+    doc["catalogue_id"] = new_id("cat")
+    doc["created_at"] = now_iso()
+    await db.catalogue.insert_one(doc)
+    doc.pop("_id", None)
+    return doc
+
+
+@api_router.put("/catalogue/{catalogue_id}")
+async def update_catalogue_item(catalogue_id: str, c: CatalogueIn, user=Depends(require_owner)):
+    doc = c.model_dump()
+    if c.image and c.image.startswith("data:"):
+        doc["image"] = save_catalogue_image(c.image)
+    else:
+        doc.pop("image", None)
+    res = await db.catalogue.update_one({"catalogue_id": catalogue_id}, {"$set": doc})
+    if res.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Item not found")
+    return await db.catalogue.find_one({"catalogue_id": catalogue_id}, {"_id": 0})
+
+
+@api_router.delete("/catalogue/{catalogue_id}")
+async def delete_catalogue_item(catalogue_id: str, user=Depends(require_owner)):
+    doc = await db.catalogue.find_one({"catalogue_id": catalogue_id}, {"_id": 0})
+    if not doc:
+        raise HTTPException(status_code=404, detail="Item not found")
+    img = doc.get("image", "")
+    if img.startswith("/api/uploads/"):
+        f = UPLOAD_DIR / img.replace("/api/uploads/", "")
+        if f.exists():
+            f.unlink()
+    await db.catalogue.delete_one({"catalogue_id": catalogue_id})
     return {"ok": True}
 
 
@@ -467,6 +584,15 @@ SEED_GALLERY = [
 ]
 
 
+CATALOGUE_SEED = [
+    {"url": "https://customer-assets-lxgj4vgw.emergentagent.net/job_elegant-home-furnish-3/artifacts/caigwsq8_WhatsApp%20Image%202026-08-07%20at%203.00.29%20PM%20%283%29.jpeg", "name": "3 + 2 Sofa Set", "is_new": True, "is_featured": False},
+    {"url": "https://customer-assets-lxgj4vgw.emergentagent.net/job_elegant-home-furnish-3/artifacts/s67s3nw9_WhatsApp%20Image%202026-08-07%20at%203.00.29%20PM%20%282%29.jpeg", "name": "L-Shape Corner Sofa Set", "is_new": True, "is_featured": True},
+    {"url": "https://customer-assets-lxgj4vgw.emergentagent.net/job_elegant-home-furnish-3/artifacts/65imas82_WhatsApp%20Image%202026-08-06%20at%208.55.21%20PM.jpeg", "name": "L-Shape Sofa Set", "is_new": False, "is_featured": True},
+    {"url": "https://customer-assets-lxgj4vgw.emergentagent.net/job_elegant-home-furnish-3/artifacts/mp62km4p_WhatsApp%20Image%202026-08-06%20at%208.55.23%20PM.jpeg", "name": "L-Shape Sofa Set with Center Table", "is_new": False, "is_featured": False},
+    {"url": "https://customer-assets-lxgj4vgw.emergentagent.net/job_elegant-home-furnish-3/artifacts/fk9uzefo_WhatsApp%20Image%202026-08-07%20at%203.01.12%20PM.jpeg", "name": "3 + 2 Sofa Set", "is_new": False, "is_featured": False},
+]
+
+
 @app.on_event("startup")
 async def seed_database():
     if await db.products.count_documents({}) == 0:
@@ -481,9 +607,31 @@ async def seed_database():
         await db.gallery.insert_many(SEED_GALLERY)
     if await db.settings.count_documents({}) == 0:
         await db.settings.insert_one(dict(DEFAULT_SETTINGS))
+    if await db.catalogue.count_documents({}) == 0:
+        for item in CATALOGUE_SEED:
+            try:
+                r = requests.get(item["url"], timeout=30)
+                if r.status_code != 200:
+                    continue
+                data_url = "data:image/jpeg;base64," + base64.b64encode(r.content).decode()
+                await db.catalogue.insert_one({
+                    "catalogue_id": new_id("cat"),
+                    "name": item["name"],
+                    "category": "Sofas",
+                    "price_label": "₹28,000 – ₹60,000",
+                    "description": "Premium sofa collection designed for comfortable everyday living.",
+                    "image": save_catalogue_image(data_url),
+                    "is_new": item["is_new"],
+                    "is_featured": item["is_featured"],
+                    "hidden": False,
+                    "created_at": now_iso(),
+                })
+            except Exception as e:
+                logger.error(f"Catalogue seed failed for {item['name']}: {e}")
 
 
 app.include_router(api_router)
+app.mount("/api/uploads", StaticFiles(directory=UPLOAD_DIR), name="uploads")
 
 app.add_middleware(
     CORSMiddleware,

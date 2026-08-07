@@ -42,6 +42,12 @@ Build a complete, production-ready, Awwwards-level luxury website for M M Good C
 - Owner alert recipient set to mmchoicefurnituremunawae@gmail.com — NOTE: platform's deliverability protection returned 422 "undeliverable recipient" for this address on 2026-08-07; needs user to confirm spelling or use another address.
 - SMS alerts (Twilio Messages API): fully wired (send_sms_alert, non-blocking, graceful skip); activates when TWILIO_ACCOUNT_SID / TWILIO_AUTH_TOKEN / TWILIO_FROM_NUMBER are added to backend/.env; recipient = settings.notify_phone (dashboard "Enquiry Alert Phone (SMS)"). PENDING user Twilio credentials.
 
+## Updates (2026-08-07, later)
+- New "OUR LATEST FURNITURE" section (id=latest-furniture) placed between Testimonials and Contact: section intro (REAL FURNITURE · REAL COLLECTION · M M GOOD CHOICE), featured horizontal showcase, dedicated search + category filter pills (ALL/SOFAS/DINING/BEDS/TV STANDS/SHOE RACKS/WARDROBES/OFFICE/COFFEE TABLES/OTHER), premium product cards (NEW ARRIVAL badge, View Details, Ask on WhatsApp with product+category prefilled), fullscreen viewer (zoom toggle, prev/next, product info, WhatsApp), empty state with "View All Furniture"
+- 5 REAL owner-uploaded sofa photos seeded into new `catalogue` Mongo collection; images enhanced presentation-only via Pillow pipeline (watermark-bar crop, gray-world white balance, autocontrast, brightness, sharpness) — furniture never altered; served as static files from /api/uploads/catalogue/
+- Backend: GET /api/catalogue (public, hides hidden), GET /api/catalogue/all + POST/PUT/DELETE (owner); uploads accept data-URL photos, auto-enhance, save to /app/backend/uploads/catalogue/
+- Owner dashboard: new "Latest Furniture" tab — add (photo+name+category+price+description+New/Featured), edit, replace photo, hide/restore, delete
+
 ## Backlog
 - P0: Real owner must sign in once at /owner to claim ownership (then remove test user)
 - P1: Replace stock photos with real showroom photography via dashboard uploads

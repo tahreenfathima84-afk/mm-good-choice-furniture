@@ -9,6 +9,7 @@ import Collections from "../components/Collections";
 import Gallery from "../components/Gallery";
 import Manifesto from "../components/Manifesto";
 import Testimonials from "../components/Testimonials";
+import LatestFurniture from "../components/LatestFurniture";
 import Contact from "../components/Contact";
 import Footer from "../components/Footer";
 import { MouseGlow, BackToTop } from "../components/Extras";
@@ -54,6 +55,7 @@ export default function Home() {
         <Manifesto />
         <Gallery />
         <Testimonials />
+        <LatestFurniture />
         <Contact settings={settings} />
       </main>
       <Footer settings={settings} />

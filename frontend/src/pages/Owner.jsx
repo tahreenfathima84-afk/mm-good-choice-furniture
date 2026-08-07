@@ -4,10 +4,11 @@ import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
 import {
   LogOut, Plus, Pencil, Trash2, X, Package, Images, Inbox, Settings as SettingsIcon,
-  LayoutDashboard, MessageCircle,
+  LayoutDashboard, MessageCircle, Armchair,
 } from "lucide-react";
 import { api, waLink } from "../lib/api";
 import { EASE } from "../components/Extras";
+import CatalogueManager from "../components/CatalogueManager";
 
 const CATS = ["Luxury Sofas", "Beds", "Dining Tables", "TV Units", "LCD Stands", "Wardrobes", "Coffee Tables", "Office Furniture", "Storage Units", "Shoe Racks", "Custom Furniture"];
 
@@ -189,6 +190,7 @@ export default function Owner() {
   const TABS = [
     ["overview", "Overview", LayoutDashboard],
     ["products", "Products", Package],
+    ["catalogue", "Latest Furniture", Armchair],
     ["gallery", "Gallery", Images],
     ["enquiries", "Enquiries", Inbox],
     ["settings", "Settings", SettingsIcon],
@@ -307,6 +309,8 @@ export default function Owner() {
               </div>
             </div>
           )}
+
+          {tab === "catalogue" && <CatalogueManager />}
 
           {tab === "gallery" && (
             <div>
