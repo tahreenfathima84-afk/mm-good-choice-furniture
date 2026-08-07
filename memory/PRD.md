@@ -55,6 +55,11 @@ Build a complete, production-ready, Awwwards-level luxury website for M M Good C
 - Navigation: "Gallery" replaced with "Our Latest Furniture" (smooth-scrolls to #latest-furniture); footer quick links updated to match
 - 5 real bed photos added to catalogue (Storage Bed, King Size Bed [Featured], Tufted Headboard Bed, Bed with Side Storage [auto-rotated upright], Wooden Bed) — Beds ₹8,500–₹40,000 with sizes 4×6/5×6.5/6×6.5; catalogue now 15 real products (7 sofas, 5 beds, 2 dining, 1 TV unit)
 
+## Updates (2026-08-07, carousels)
+- Navigation finalized in exact order: Home, About, Collections, Why Us, Our Latest Furniture, Contact (About anchors to the Why Us/Manifesto section via id="about"; Stories removed from nav, section remains on page)
+- Our Latest Furniture default view restructured into per-category horizontal carousels (Sofas, Dining Tables, Beds, LCD/TV Stands, Shoe Racks, Wardrobes, Office, Coffee Tables, Other) with heading, piece count, left/right arrows, scroll-snap swipe on mobile (~1.2 cards visible); search/filter switches to results grid; viewer unchanged
+- 5 more real photos added: 3-Door Wardrobe, Wall-Mounted TV Unit (Featured), 4-Door Wardrobe with Drawers, 4-Door Wardrobe, 2-Door Wardrobe with Mirror — catalogue now 20 real products (7 sofas, 5 beds, 4 wardrobes, 2 dining, 2 TV units)
+
 ## Backlog
 - P0: Real owner must sign in once at /owner to claim ownership (then remove test user)
 - P1: Replace stock photos with real showroom photography via dashboard uploads

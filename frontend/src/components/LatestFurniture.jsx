@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Search, X, SearchX, MessageCircle, Eye, ChevronLeft, ChevronRight, BadgeCheck, Sparkles } from "lucide-react";
 import { SectionHeading, Reveal, Magnetic, EASE } from "./Extras";
@@ -112,6 +112,48 @@ function CatalogueCard({ item, index, onView, featured = false }) {
   );
 }
 
+const CATEGORY_ORDER = ["Sofas", "Dining Tables", "Beds", "LCD / TV Stands", "Shoe Racks", "Wardrobes", "Office Furniture", "Coffee Tables", "Other Furniture"];
+
+function CategoryRow({ category, items, onView }) {
+  const rowRef = useRef(null);
+  const slug = category.replace(/[\s/]+/g, "-").toLowerCase();
+  const scroll = (d) => {
+    const el = rowRef.current;
+    if (el) el.scrollBy({ left: d * el.clientWidth * 0.75, behavior: "smooth" });
+  };
+  return (
+    <div className="mt-14">
+      <Reveal>
+        <div className="mb-5 flex items-end justify-between gap-4">
+          <div>
+            <h3 className="font-display text-2xl font-extrabold tracking-tight text-ink sm:text-3xl">{category}</h3>
+            <p className="mt-1 font-btn text-[11px] font-semibold tracking-[0.25em] uppercase text-copper">
+              {items.length} {items.length === 1 ? "Piece" : "Pieces"}
+            </p>
+          </div>
+          <div className="flex gap-2">
+            <button data-testid={`row-prev-${slug}`} onClick={() => scroll(-1)} aria-label={`Scroll ${category} left`} className="grid h-11 w-11 place-items-center rounded-full border border-espresso/15 text-espresso transition-colors duration-300 hover:bg-espresso hover:text-cream">
+              <ChevronLeft size={18} />
+            </button>
+            <button data-testid={`row-next-${slug}`} onClick={() => scroll(1)} aria-label={`Scroll ${category} right`} className="grid h-11 w-11 place-items-center rounded-full border border-espresso/15 text-espresso transition-colors duration-300 hover:bg-espresso hover:text-cream">
+              <ChevronRight size={18} />
+            </button>
+          </div>
+        </div>
+      </Reveal>
+      <div
+        ref={rowRef}
+        data-testid={`category-row-${slug}`}
+        className="flex snap-x snap-mandatory gap-6 overflow-x-auto pb-3 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+      >
+        {items.map((item, i) => (
+          <CatalogueCard key={item.catalogue_id} item={item} index={i} onView={onView} featured />
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export default function LatestFurniture() {
   const [items, setItems] = useState([]);
   const [filter, setFilter] = useState("ALL");
@@ -131,6 +173,7 @@ export default function LatestFurniture() {
   }, [items, filter, query]);
 
   const featured = useMemo(() => items.filter((i) => i.is_featured), [items]);
+  const isDefaultView = filter === "ALL" && !query.trim();
 
   const openItem = (item) => {
     const idx = visible.findIndex((v) => v.catalogue_id === item.catalogue_id);
@@ -252,6 +295,13 @@ export default function LatestFurniture() {
               View All Furniture
             </button>
           </motion.div>
+        ) : isDefaultView ? (
+          <div data-testid="category-rows">
+            {CATEGORY_ORDER.map((cat) => {
+              const catItems = visible.filter((i) => i.category === cat);
+              return catItems.length > 0 ? <CategoryRow key={cat} category={cat} items={catItems} onView={openItem} /> : null;
+            })}
+          </div>
         ) : (
           <motion.div layout className="mt-12 grid gap-7 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             <AnimatePresence mode="popLayout">

@@ -4,6 +4,7 @@ import { MANIFESTO, STATS, IMAGES } from "../lib/content";
 export default function Manifesto() {
   return (
     <section id="why-us" data-testid="why-us-section" className="noise-overlay relative bg-cream py-24 md:py-32">
+      <span id="about" className="absolute -top-20" aria-hidden="true" />
       <div className="mx-auto w-[min(1240px,94%)]">
         <div className="grid gap-16 lg:grid-cols-12">
           <div className="lg:col-span-5">

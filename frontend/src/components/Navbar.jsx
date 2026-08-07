@@ -5,10 +5,11 @@ import { scrollToId, EASE } from "./Extras";
 import { PHONE_TEL, waLink } from "../lib/api";
 
 const LINKS = [
+  { id: "home", label: "Home" },
+  { id: "about", label: "About" },
   { id: "collections", label: "Collections" },
-  { id: "latest-furniture", label: "Our Latest Furniture" },
   { id: "why-us", label: "Why Us" },
-  { id: "testimonials", label: "Stories" },
+  { id: "latest-furniture", label: "Our Latest Furniture" },
   { id: "contact", label: "Contact" },
 ];
 
