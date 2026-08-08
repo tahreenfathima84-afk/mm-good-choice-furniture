@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, X, SearchX, MessageCircle, Eye, ChevronLeft, ChevronRight, BadgeCheck, Sparkles } from "lucide-react";
+import { Search, X, SearchX, MessageCircle, Eye, ChevronLeft, ChevronRight, Sparkles } from "lucide-react";
 import { SectionHeading, Reveal, Magnetic, EASE } from "./Extras";
 import { api, waLink, imgSrc } from "../lib/api";
 
@@ -172,7 +172,6 @@ export default function LatestFurniture() {
     return items.filter((i) => (!f?.match || f.match.includes(i.category)) && matchesSearch(i, query));
   }, [items, filter, query]);
 
-  const featured = useMemo(() => items.filter((i) => i.is_featured), [items]);
   const isDefaultView = filter === "ALL" && !query.trim();
 
   const openItem = (item) => {
@@ -224,23 +223,6 @@ export default function LatestFurniture() {
             </p>
           </Reveal>
         </div>
-
-        {featured.length > 0 && (
-          <Reveal delay={0.15} className="mt-14">
-            <div className="mb-5 flex items-center gap-3">
-              <BadgeCheck size={17} className="text-copper" />
-              <p className="font-btn text-xs font-semibold tracking-[0.25em] uppercase text-inksoft">Featured This Week</p>
-            </div>
-            <div
-              data-testid="featured-showcase"
-              className="flex snap-x snap-mandatory gap-6 overflow-x-auto pb-4 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-            >
-              {featured.map((item, i) => (
-                <CatalogueCard key={item.catalogue_id} item={item} index={i} onView={openItem} featured />
-              ))}
-            </div>
-          </Reveal>
-        )}
 
         <Reveal delay={0.2} className="mt-12">
           <div className="relative max-w-xl mx-auto">

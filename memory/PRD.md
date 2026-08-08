@@ -78,6 +78,8 @@ Build a complete, production-ready, Awwwards-level luxury website for M M Good C
 - Catalogue now 25 products, ALL real photographs: Sofas 7, Beds 7, Wardrobes 6, Dining 2, TV Stands 2, Office 1
 - Owner upload security re-verified: unauthenticated POST/PUT/DELETE /api/catalogue → 401; public GET read-only; owner management via existing dashboard "Latest Furniture" tab (upload/name/category/price/description/New/Featured/edit/replace/hide/delete)
 - Added 5 more real owner photos (2026-08-08): Office Desk with Drawers (Office), Heart Design Bed (Beds), Diamond Design Bed (Beds, Featured), Study Desk with Shelves (Office), Pooja Cabinet (Other, ₹8,000–₹20,000) — catalogue now 30 real products: Sofas 7, Beds 9, Wardrobes 6, Office 3, Dining 2, TV Stands 2, Other 1
+- Removed "Featured This Week" showcase block from Our Latest Furniture (public site only; is_featured flag remains in dashboard/data)
+- Added 5 more real owner photos (2026-08-08, batch 2): Marble Finish 2-Door Wardrobe (Wardrobes), Designer Pooja Cabinet (Other), Marble Finish Office Desk (Office), 6-Seater Dining Set (Dining), Designer Bed with Side Tables (Beds) — catalogue now 35 real products
 
 ## Backlog
 - P0: Real owner must sign in once at /owner to claim ownership (then remove test user)
