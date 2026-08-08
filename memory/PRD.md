@@ -82,6 +82,7 @@ Build a complete, production-ready, Awwwards-level luxury website for M M Good C
 - Added 5 more real owner photos (2026-08-08, batch 2): Marble Finish 2-Door Wardrobe (Wardrobes), Designer Pooja Cabinet (Other), Marble Finish Office Desk (Office), 6-Seater Dining Set (Dining), Designer Bed with Side Tables (Beds) — catalogue now 35 real products
 - Added 5 more real owner photos (2026-08-08, batch 3): 4-Seater Wooden Dining Set (Dining), Wooden Pooja Cabinet (Other), Marble Panel TV Wall Unit (TV), 2-Door Shoe Cabinet (Shoe Racks — first shoe rack), Designer TV Wall Unit (TV) — catalogue now 40 real products: Sofas 7, Beds 10, Wardrobes 7, Dining 4, TV 4, Office 4, Other 3, Shoe Racks 1
 - Added 5 more real owner photos (2026-08-08, batch 4): Marble Finish TV Wall Unit (TV), Glass-Top 6-Seater Dining Table (Dining), Dark Wood 6-Seater Dining Table (Dining), Premium 6-Seater Dining Set (Dining), Pooja Mandir Cabinet (Other) — catalogue now 45 real products: Sofas 7, Beds 10, Wardrobes 7, Dining 7, TV 5, Office 4, Other 4, Shoe Racks 1
+- Added 3 real shoe-rack photos (2026-08-08, batch 5): Wide 2-Door Shoe Cabinet, 3-Door Wooden Shoe Cabinet, Shoe Cabinet with Drawer — catalogue now 48 real products, Shoe Racks category has 4
 
 ## Backlog
 - P0: Real owner must sign in once at /owner to claim ownership (then remove test user)
