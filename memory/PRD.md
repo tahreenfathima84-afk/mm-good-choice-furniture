@@ -72,6 +72,12 @@ Build a complete, production-ready, Awwwards-level luxury website for M M Good C
 - Collections ProductCard now uses imgSrc() helper so backend-hosted images resolve correctly
 - Verified: all 9 category filters, searches (sofa/bed/table/wardrobe/tv/shoe/office), search+filter combos (Beds+wood, Sofas+l-shape), empty state, reset, mobile
 
+## Updates (2026-08-08, real-photos-only)
+- REMOVED all 44 AI-generated catalogue products + their image files (identified by generation-batch created_at >= 2026-08-07T13:00); the 20 genuine owner photos untouched
+- Added 5 new real owner photos: Designer Storage Bed (Beds), L-Shape Office Desk (Office Furniture), Premium Upholstered Bed (Beds, Featured), Sliding Door Wardrobe (Wardrobes), Sliding Wardrobe with Mirror (Wardrobes) — all New Arrival
+- Catalogue now 25 products, ALL real photographs: Sofas 7, Beds 7, Wardrobes 6, Dining 2, TV Stands 2, Office 1
+- Owner upload security re-verified: unauthenticated POST/PUT/DELETE /api/catalogue → 401; public GET read-only; owner management via existing dashboard "Latest Furniture" tab (upload/name/category/price/description/New/Featured/edit/replace/hide/delete)
+
 ## Backlog
 - P0: Real owner must sign in once at /owner to claim ownership (then remove test user)
 - P1: Replace stock photos with real showroom photography via dashboard uploads
