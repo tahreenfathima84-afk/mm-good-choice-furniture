@@ -4,7 +4,11 @@ const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 export { BACKEND_URL };
 
-export const imgSrc = (u) => (u && u.startsWith("/api") ? `${BACKEND_URL}${u}` : u);
+export const imgSrc = (u) => {
+  const result = u && u.startsWith("/api") ? `${BACKEND_URL}${u}` : u;
+  console.log("IMAGE DEBUG:", { original: u, final: result });
+  return result;
+};
 
 export const api = axios.create({
   baseURL: `${BACKEND_URL}/api`,
