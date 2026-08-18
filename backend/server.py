@@ -571,11 +571,8 @@ app.mount("/api/uploads", StaticFiles(directory=UPLOAD_DIR), name="uploads")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-    "https://mm-good-choice-furniture-27df.vercel.app",
-    "https://mm-good-choice-furniture-m9eckguof-t-s-projectst.vercel.app",
-],
     allow_credentials=True,
+    allow_origins=os.environ.get('CORS_ORIGINS', '*').split(','),
     allow_methods=["*"],
     allow_headers=["*"],
 )
